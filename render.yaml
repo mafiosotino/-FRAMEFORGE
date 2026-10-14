@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: frameforge-v2
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: HF_TOKEN
+        sync: false
+      - key: HF_MODEL
+        value: Wan-AI/Wan2.2-TI2V-5B
+      - key: HF_PROVIDER
+        value: fal-ai

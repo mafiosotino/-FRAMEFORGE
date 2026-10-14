@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101114">
+<title>FrameForge — AI Film Studio V2</title>
+<style>
+:root{--bg:#101114;--panel:#191b21;--panel2:#20232b;--line:#30333d;--text:#f4f4f5;--muted:#a4a7b2;--accent:#c5f467;--accentText:#10140a;--danger:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:22px clamp(16px,4vw,44px);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:850;letter-spacing:-.04em;font-size:21px}.brand span{color:var(--accent)}.tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:5px 9px;border-radius:999px}
+main{max-width:1120px;margin:auto;padding:24px clamp(14px,3vw,30px) 60px}
+.hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap}.eyebrow{color:var(--accent);font-weight:750;text-transform:uppercase;letter-spacing:.13em;font-size:11px}
+h1{font-size:clamp(30px,5vw,48px);letter-spacing:-.055em;line-height:1.05;margin:8px 0 10px}.sub{color:var(--muted);max-width:680px;margin:0}
+.layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.3fr);gap:16px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;min-width:0}.panel h2{font-size:17px;margin:0 0 14px;letter-spacing:-.02em}
+label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin:14px 0 7px}
+input,textarea,select{width:100%;background:#111216;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}textarea{resize:vertical;min-height:100px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button,.filebtn{border:1px solid var(--line);border-radius:10px;padding:10px 13px;background:var(--panel2);color:var(--text);font:700 13px system-ui;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accentText);border-color:var(--accent)}button:hover,.filebtn:hover{filter:brightness(1.1)}
+.small{font-size:12px;color:var(--muted)}.notice{padding:11px 12px;background:#252a1e;border:1px solid #465332;border-radius:10px;color:#dce9c8;font-size:12px;margin-top:14px}
+.scenehead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.scene-list{display:grid;gap:10px;margin-top:12px}
+.scene{border:1px solid var(--line);border-radius:13px;padding:13px;background:#14161b}.scene-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.scene-title{font-weight:800}.time{color:var(--accent);font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.scene p{font-size:13px;color:#d3d4da;margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}.scene-meta{font-size:11px;color:var(--muted)}
+.scene-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.scene-actions button{padding:7px 9px;font-size:11px}
+.empty{border:1px dashed #444854;border-radius:12px;padding:28px 14px;text-align:center;color:var(--muted)}
+footer{color:var(--muted);font-size:12px;margin-top:18px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#e8f5d0;color:#10140a;padding:10px 14px;border-radius:999px;font-size:13px;font-weight:800;display:none;z-index:10;max-width:90vw}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.hero{align-items:flex-start}.panel{padding:15px}.row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><div class="brand">FRAME<span>FORGE</span> <span style="color:#f4f4f5;font-weight:500;font-size:12px;letter-spacing:0"> / AI FILM STUDIO</span></div><div class="tag">VERSION 2 · VIDEO API PROTOTYPE</div></header>
+<main>
+<section class="hero"><div><div class="eyebrow">Your story. Your vision.</div><h1>Build the scene<br>before you shoot it.</h1><p class="sub">Turn an idea, script, or song into structured cinematic prompts and a timestamped storyboard. This first version runs in your browser and doesn't require an account.</p></div></section>
+<div class="layout">
+<section class="panel">
+<h2>01 / Project setup</h2>
+<label for="project">Project title</label><input id="project" value="Untitled Film Project" maxlength="100">
+<div class="row"><div><label for="format">Frame format</label><select id="format"><option value="16:9">16:9 · Cinematic</option><option value="9:16">9:16 · Vertical</option><option value="1:1">1:1 · Square</option></select></div><div><label for="style">Visual style</label><select id="style"><option>Cinematic realism</option><option>Anime</option><option>Neo-noir</option><option>Documentary</option><option>Science fiction</option><option>Music video</option></select></div></div>
+<label for="idea">Scene idea / action</label><textarea id="idea" placeholder="Describe exactly what the audience sees. Who is in frame? What do they do? Where are they?"></textarea>
+<label for="camera">Camera movement</label><select id="camera"><option>Slow tracking shot</option><option>Locked-off wide shot</option><option>Slow dolly in</option><option>Handheld follow shot</option><option>Crane rise</option><option>Orbit around subject</option><option>Low-angle push in</option><option>Over-the-shoulder shot</option></select>
+<div class="row"><div><label for="lighting">Lighting</label><select id="lighting"><option>Moody practical lighting</option><option>Golden-hour backlight</option><option>Hard neon reflections</option><option>Soft natural window light</option><option>High-contrast chiaroscuro</option><option>Cold fluorescent lighting</option></select></div><div><label for="lens">Lens / framing</label><select id="lens"><option>35mm medium-wide</option><option>24mm wide establishing shot</option><option>50mm natural perspective</option><option>85mm portrait close-up</option><option>Macro detail shot</option></select></div></div>
+<label for="continuity">Character / wardrobe continuity</label><input id="continuity" placeholder="e.g. same black bomber jacket, short twists, no visible tattoos">
+<label for="negative">Avoid / negative guidance</label><input id="negative" placeholder="e.g. text, logos, extra fingers, changing outfit">
+<div class="buttons"><button class="primary" id="enhance">Build cinematic prompt</button><button id="addScene">Add to storyboard</button></div>
+<label for="output">Generated prompt</label><textarea id="output" placeholder="Your structured video prompt will appear here…"></textarea>
+<div class="buttons"><button id="copyPrompt">Copy prompt</button><button id="downloadPrompt">Download prompt .txt</button></div>
+
+<div class="panel" style="padding:14px;margin-top:14px;background:#14161b">
+  <h2 style="margin-bottom:4px">03 / Generate a video</h2>
+  <p class="small">Sends your prompt to the server-side video provider. Generation may take time and may fail if your account has no eligible credits or the selected model is unavailable.</p>
+  <label for="apiBase">Backend URL (leave blank when this website and API are hosted together)</label>
+  <input id="apiBase" placeholder="e.g. https://your-frameforge-api.example.com">
+  <div class="buttons">
+    <button class="primary" id="generateVideo">Generate video from prompt</button>
+    <button id="checkApi">Check backend</button>
+  </div>
+  <p id="apiStatus" class="small" role="status">Backend status not checked.</p>
+  <div id="videoResult" style="display:none;margin-top:12px">
+    <video id="generatedVideo" controls playsinline style="width:100%;max-height:420px;background:#000;border-radius:10px"></video>
+    <div class="buttons"><button id="downloadVideo">Download generated clip</button></div>
+  </div>
+  <div id="genError" class="notice" style="display:none;background:#2a2020;border-color:#583b3b;color:#ffd6d6"></div>
+</div>
+<div class="notice">Security: the Hugging Face token belongs on the server as an environment variable. Never paste it into this website or browser JavaScript.</div>
+
+</section>
+<section class="panel">
+<div class="scenehead"><h2 style="margin:0">02 / Storyboard timeline</h2><span id="count" class="tag">0 scenes</span></div>
+<p class="small">Add shots, set start times, reorder them, and export your plan. Timing is for editing and planning—not automatic audio analysis.</p>
+<div class="row"><div><label for="startTime">Next scene start (seconds)</label><input id="startTime" type="number" min="0" step="0.1" value="0"></div><div><label for="duration">Scene duration (seconds)</label><input id="duration" type="number" min="1" step="0.5" value="5"></div></div>
+<label for="notes">Scene purpose / lyric cue (optional)</label><input id="notes" placeholder="e.g. first hook, memory of home, beat drop">
+<div class="buttons"><button id="addCurrent" class="primary">Add current prompt as scene</button><button id="sortScenes">Sort by timestamp</button></div>
+<div class="scene-list" id="sceneList"><div class="empty">Your storyboard is empty.<br>Add your first scene from the left panel.</div></div>
+<div class="buttons"><button class="primary" id="exportJson">Export storyboard JSON</button><button id="exportCsv">Export shot list CSV</button><button id="saveProject">Download full project</button><label class="filebtn" for="importFile" style="margin:0">Import project JSON</label><input id="importFile" type="file" accept=".json,application/json" hidden></div>
+<footer>Prototype saves scenes in this browser while the page remains open. Download your project JSON for a portable backup. Do not upload private API keys here.</footer>
+</section>
+</div>
+</main>
+<div id="toast"></div>
+<script>
+const $ = id => document.getElementById(id);
+let scenes = [];
+let nextId = 1;
+const fields = ['project','format','style','idea','camera','lighting','lens','continuity','negative','output','startTime','duration','notes'];
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>t.style.display='none',2200)}
+function buildPrompt(){
+ const idea=$('idea').value.trim(); if(!idea){toast('Add a scene idea first.');$('idea').focus();return ''}
+ const parts=[
+  `SUBJECT & ACTION: ${idea}`,
+  `VISUAL STYLE: ${$('style').value}.`,
+  `CAMERA: ${$('camera').value}; ${$('lens').value}.`,
+  `LIGHTING & ATMOSPHERE: ${$('lighting').value}.`,
+  `FRAME: ${$('format').value} aspect ratio.`,
+  $('continuity').value.trim()?`CHARACTER CONTINUITY: ${$('continuity').value.trim()}.`:'',
+  $('negative').value.trim()?`AVOID: ${$('negative').value.trim()}.`:'',
+  `QUALITY: coherent physical movement, natural motion, clear subject separation, consistent wardrobe and facial features, detailed environment, no abrupt camera changes.`
+ ].filter(Boolean);
+ $('output').value=parts.join('\n\n'); return $('output').value;
+}
+function addScene(){
+ const prompt=$('output').value.trim()||buildPrompt(); if(!prompt)return;
+ const start=Math.max(0,Number($('startTime').value)||0), duration=Math.max(1,Number($('duration').value)||5);
+ scenes.push({id:nextId++,title:`Scene ${scenes.length+1}`,start,duration,format:$('format').value,style:$('style').value,notes:$('notes').value.trim(),prompt});
+ render(); $('startTime').value=(start+duration).toFixed(1).replace(/\\.0$/,''); $('notes').value=''; toast('Scene added to storyboard.');
+}
+function timecode(seconds){seconds=Math.max(0,Number(seconds)||0);let m=Math.floor(seconds/60),s=seconds%60;return `${String(m).padStart(2,'0')}:${s.toFixed(1).padStart(4,'0')}`}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+ $('count').textContent=`${scenes.length} scene${scenes.length===1?'':'s'}`;
+ const list=$('sceneList'); if(!scenes.length){list.innerHTML='<div class="empty">Your storyboard is empty.<br>Add your first scene from the left panel.</div>';return}
+ list.innerHTML=scenes.map((s,i)=>`<article class="scene"><div class="scene-top"><div class="scene-title">${escapeHtml(s.title)}</div><div class="time">${timecode(s.start)} → ${timecode(s.start+s.duration)}</div></div><div class="scene-meta">${escapeHtml(s.style)} · ${escapeHtml(s.format)} · ${s.duration}s${s.notes?' · '+escapeHtml(s.notes):''}</div><p>${escapeHtml(s.prompt)}</p><div class="scene-actions"><button data-act="copy" data-id="${s.id}">Copy prompt</button><button data-act="edit" data-id="${s.id}">Edit timing</button><button data-act="up" data-id="${s.id}" ${i===0?'disabled':''}>Move up</button><button data-act="down" data-id="${s.id}" ${i===scenes.length-1?'disabled':''}>Move down</button><button data-act="delete" data-id="${s.id}">Delete</button></div></article>`).join('');
+}
+function projectData(){return {app:'FrameForge',version:1,project:$('project').value,createdAt:new Date().toISOString(),settings:{format:$('format').value,style:$('style').value},scenes:scenes.map(({id,...s})=>s)}}
+function download(name,content,type='text/plain'){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function safeName(s){return (s||'film-project').replace(/[^a-z0-9-_]+/gi,'-').replace(/^-|-$/g,'').slice(0,60)||'film-project'}
+$('enhance').onclick=buildPrompt;
+$('addScene').onclick=addScene;
+$('addCurrent').onclick=addScene;
+$('copyPrompt').onclick=async()=>{if(!$('output').value.trim())buildPrompt();if($('output').value.trim()){try{await navigator.clipboard.writeText($('output').value);toast('Prompt copied.')}catch(e){$('output').select();toast('Select and copy the prompt.')}}};
+$('downloadPrompt').onclick=()=>{const p=$('output').value.trim()||buildPrompt();if(p)download(safeName($('project').value)+'-prompt.txt',p)};
+$('sortScenes').onclick=()=>{scenes.sort((a,b)=>a.start-b.start);render();toast('Sorted by start time.')};
+$('exportJson').onclick=()=>download(safeName($('project').value)+'-storyboard.json',JSON.stringify(projectData(),null,2),'application/json');
+$('saveProject').onclick=()=>download(safeName($('project').value)+'-project.json',JSON.stringify({...projectData(),form:Object.fromEntries(fields.map(f=>[f,$(f).value]))},null,2),'application/json');
+$('exportCsv').onclick=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const rows=[['Scene','Start (s)','Start TC','Duration (s)','End TC','Format','Style','Notes','Prompt'],...scenes.map((s,i)=>[s.title,s.start,timecode(s.start),s.duration,timecode(s.start+s.duration),s.format,s.style,s.notes,s.prompt])];download(safeName($('project').value)+'-shot-list.csv',rows.map(r=>r.map(q).join(',')).join('\r\n'),'text/csv')};
+$('sceneList').addEventListener('click',async e=>{const b=e.target.closest('button[data-act]');if(!b)return;const id=Number(b.dataset.id),i=scenes.findIndex(s=>s.id===id),s=scenes[i];if(i<0)return;switch(b.dataset.act){case'copy':try{await navigator.clipboard.writeText(s.prompt);toast('Scene prompt copied.')}catch(e){toast('Clipboard unavailable.')}break;case'delete':scenes.splice(i,1);render();break;case'up':if(i>0){[scenes[i-1],scenes[i]]=[scenes[i],scenes[i-1]];render()}break;case'down':if(i<scenes.length-1){[scenes[i+1],scenes[i]]=[scenes[i],scenes[i+1]];render()}break;case'edit':{const st=prompt('Start time in seconds:',s.start);if(st===null)return;const du=prompt('Duration in seconds:',s.duration);if(du===null)return;if(!Number.isFinite(Number(st))||Number(st)<0||!Number.isFinite(Number(du))||Number(du)<=0){toast('Enter a valid time and duration.');return}s.start=Number(st);s.duration=Number(du);render();break}}});
+$('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data.scenes))throw new Error('No scenes found');if(data.form){fields.forEach(f=>{if(data.form[f]!==undefined)$(f).value=data.form[f]})}else{if(data.project)$('project').value=data.project;if(data.settings?.format)$('format').value=data.settings.format;if(data.settings?.style)$('style').value=data.settings.style}
+ scenes=data.scenes.map((s,i)=>({id:nextId++,title:s.title||`Scene ${i+1}`,start:Number(s.start)||0,duration:Number(s.duration)||5,format:s.format||data.settings?.format||'16:9',style:s.style||data.settings?.style||'Cinematic realism',notes:s.notes||'',prompt:s.prompt||''}));render();toast('Project imported.')}catch(err){toast('Could not import that project JSON.')}e.target.value=''};
+
+// Version 2: server-side text-to-video integration.
+function apiRoot(){ return ($('apiBase')?.value || '').trim().replace(/\/+$/,''); }
+function apiUrl(path){ return apiRoot() + path; }
+function showGenError(message){ const e=$('genError'); e.textContent=message; e.style.display='block'; }
+function clearGenError(){ const e=$('genError'); e.textContent=''; e.style.display='none'; }
+async function checkBackend(){
+ const status=$('apiStatus'); status.textContent='Checking backend…'; clearGenError();
+ try{
+  const r=await fetch(apiUrl('/api/health'));
+  const d=await r.json();
+  if(!r.ok) throw new Error(d.detail||'Backend check failed');
+  status.textContent=d.provider_configured
+    ? `Backend online · provider configured · model: ${d.model}`
+    : 'Backend online · video provider not configured yet. Add HF_TOKEN on the server.';
+ }catch(err){status.textContent='Backend unreachable. Confirm the API URL and deployment are correct.';showGenError(err.message||String(err));}
+}
+$('checkApi')?.addEventListener('click',checkBackend);
+$('generateVideo')?.addEventListener('click',async()=>{
+ clearGenError();
+ let promptText=$('output').value.trim();
+ if(!promptText) promptText=buildPrompt();
+ if(!promptText){showGenError('Write a scene idea and build a cinematic prompt first.');return;}
+ const btn=$('generateVideo'), status=$('apiStatus');
+ btn.disabled=true;btn.textContent='Submitting / generating…';status.textContent='Waiting for the video provider. This can take several minutes.';
+ $('videoResult').style.display='none';
+ try{
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(), 10*60*1000);
+  let response;
+  try{
+   response=await fetch(apiUrl('/api/generate'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    prompt:promptText,
+    project:$('project').value,
+    aspect_ratio:$('format').value
+   }),signal:controller.signal});
+  } finally { clearTimeout(timeout); }
+  if(!response.ok){
+   let msg='Video generation failed.';
+   try{const d=await response.json();msg=d.detail||msg;}catch(e){}
+   throw new Error(msg);
+  }
+  const blob=await response.blob();
+  if(!blob.size) throw new Error('The provider returned an empty video.');
+  const videoUrl=URL.createObjectURL(blob);
+  const video=$('generatedVideo');
+  if(video.dataset.objectUrl) URL.revokeObjectURL(video.dataset.objectUrl);
+  video.src=videoUrl;video.dataset.objectUrl=videoUrl;
+  $('videoResult').style.display='block';
+  $('downloadVideo').onclick=()=>{const a=document.createElement('a');a.href=videoUrl;a.download=(($('project').value||'frameforge').replace(/[^a-z0-9-_]+/gi,'-'))+'-clip.mp4';a.click();};
+  status.textContent='Video returned successfully. Preview it below and download the clip.';
+ }catch(err){
+  let msg=err.name==='AbortError'?'Request timed out. The model may still be processing; try a shorter prompt or check provider status.':(err.message||String(err));
+  showGenError(msg);status.textContent='Generation did not complete.';
+ }finally{btn.disabled=false;btn.textContent='Generate video from prompt';}
+});
+
+</script>
+</body></html>
